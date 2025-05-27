@@ -3,6 +3,7 @@ import { Hero } from "@/components/Hero";
 import { GamesSection } from "@/components/GamesSection";
 import { RankingsSection } from "@/components/RankingsSection";
 import { Navigation } from "@/components/Navigation";
+import { AuthContextProvider } from '../context/AuthContext';
 
 const Index = () => {
   return (
