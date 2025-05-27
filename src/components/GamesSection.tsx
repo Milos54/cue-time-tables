@@ -1,5 +1,5 @@
-
-import { Calendar, Clock, Trophy } from "lucide-react";
+import { Calendar, Clock, Trophy, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const mockGames = [
   {
@@ -45,6 +45,8 @@ const mockGames = [
 ];
 
 export const GamesSection = () => {
+  const navigate = useNavigate();
+
   return (
     <section id="games" className="py-20 bg-white/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -55,6 +57,17 @@ export const GamesSection = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-600">Latest matches and results</p>
+          
+          {/* Add Game Button */}
+          <div className="mt-6">
+            <button 
+              onClick={() => navigate('/add-game')}
+              className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-105 shadow-lg inline-flex items-center gap-2"
+            >
+              <Plus className="h-5 w-5" />
+              Add New Game
+            </button>
+          </div>
         </div>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
