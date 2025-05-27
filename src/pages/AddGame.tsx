@@ -13,11 +13,11 @@ import { cn } from "@/lib/utils";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { getUsers } from './Index';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { collection, getDocs, onSnapshot,setDoc, doc, Timestamp } from "firebase/firestore";
+import {db} from '../firebase/config'
+import { v4 as uuidv4 } from 'uuid';
 
-
-
-
-const SelectComponent = ({selectValue, selectLabel, options, onChange}) => {
+const SelectComponent = ({selectValue, selectLabel, options, onChange,  disabledOptions = []}) => {
   return (
     <Select onValueChange={onChange}>
     <SelectTrigger>
@@ -26,10 +26,18 @@ const SelectComponent = ({selectValue, selectLabel, options, onChange}) => {
     <SelectContent>
       <SelectGroup>
         <SelectLabel>{selectLabel}</SelectLabel>
-        {options && options.map((op) => (
-        <SelectItem  key={op.id} value={op.displayName || `${op.firstName} ${op.lastName}`}>{op.displayName || `${op.firstName} ${op.lastName}`}</SelectItem>
+        {options &&
+            options
+              .filter((op) => !disabledOptions.includes(op.displayName || `${op.firstName} ${op.lastName}`))
+              .map((op) => {
+                const label = op.displayName || `${op.firstName} ${op.lastName}`;
+                return (
+                  <SelectItem key={op.id} value={label}>
+                    {label}
+                  </SelectItem>
+                );
+              })}
 
-        ))}
      
       </SelectGroup>
     </SelectContent>
@@ -54,7 +62,7 @@ const AddGame = () => {
   const [time, setTime] = useState("");
   const [winner, setWinner] = useState(player1)
   const [isCalendarOpen, setIsCalendarOpen] = useState(false)
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =  (e: React.FormEvent) => {
     e.preventDefault();
     // Game submission logic will be added later
     console.log("Game submitted:", {
@@ -64,12 +72,24 @@ const AddGame = () => {
       date,
       time
     });
-    
-    alert("Game record added successfully!");
-    navigate("/");
+
+
+    saveGameRecord()
+    // navigate("/");
   };
 
-  
+  async function saveGameRecord() {
+    const docId = uuidv4();  
+    const formattedDate = format(date, "yyyy-MM-dd");
+    await setDoc(doc(db, "games", docId), {
+      id: docId,
+      player1,
+      player2,
+      winner,
+      date: formattedDate,
+      time,
+    });
+  }
 
   const isFormValid = player1 && player2 && winner && date ;
 
@@ -109,8 +129,8 @@ const AddGame = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Players Section */}
               <div className="flex items-center gap-6">
-              <SelectComponent selectValue={'Player 1'} selectLabel={'Players'} options={users} onChange={setPlayer1}/>
-              <SelectComponent selectValue={'Player 2'} selectLabel={'Players'} options={users} onChange={setPlayer2}/>
+              <SelectComponent  disabledOptions={[player2]} selectValue={'Player 1'} selectLabel={'Players'} options={users} onChange={setPlayer1}/>
+              <SelectComponent  disabledOptions={[player1]} selectValue={'Player 2'} selectLabel={'Players'} options={users} onChange={setPlayer2}/>
             
               </div>
 

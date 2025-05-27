@@ -19,6 +19,18 @@ export const getUsers = async () => {
   
   return results;
 };
+
+export const getGames = async () => {
+  const ref = collection(db, 'games');
+  const snapshot = await getDocs(ref);
+  const results = snapshot.docs.map(doc => ({
+    ...doc.data(),
+    id: doc.id
+  }));
+  console.log(results);
+  
+  return results;
+};
 const Index = () => {
 
   

@@ -1,6 +1,8 @@
 import { Calendar, Clock, Trophy, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from '../firebasehooks/useAuthContext';
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { getGames } from "@/pages/Index";
 
 const mockGames = [
   {
@@ -41,6 +43,12 @@ export const GamesSection = () => {
   const navigate = useNavigate();
   const {user} = useAuthContext()
 
+  const { data: games, status } = useQuery({
+    queryKey: ['games'],
+    queryFn: getGames,
+  });
+  console.log(games);
+
   return (
     <section id="games" className="py-20 bg-white/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,7 +73,7 @@ export const GamesSection = () => {
         </div>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-          {mockGames.map((game) => (
+          {games && games.map((game) => (
             <div 
               key={game.id} 
               className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300 transform hover:scale-105"

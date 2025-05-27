@@ -19,8 +19,8 @@ const Login = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [displayName, setDisplayName] = useState('')
-  const {signup} = useSignup()
-  const {login} = useLogin()
+  const {signup, isPending: isPendingForSignUp} = useSignup()
+  const {login, isPending: isPendingForLogin} = useLogin()
   const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -167,7 +167,7 @@ const Login = () => {
                 type="submit"
                 className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white"
               >
-                {isLogin ? "Sign In" : "Create Account"}
+                {isLogin ? `${isPendingForLogin ? "Singing You In..." : "Sign In"}` :`${isPendingForSignUp ? "Creating Your Account..." : "Creating Account"}`}
               </Button>
             </form>
 
@@ -185,12 +185,6 @@ const Login = () => {
           </CardContent>
         </Card>
 
-        {/* Demo Notice */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            This is a demo design. Authentication functionality will be added later.
-          </p>
-        </div>
       </div>
     </div>
   );
