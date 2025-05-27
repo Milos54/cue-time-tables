@@ -16,7 +16,6 @@ export const useSignup = () => {
   const [isPending, setIsPending] = useState(false);
   const { dispatch } = useAuthContext();
   // const [imgUrl, setImgUrl] = useState('')
-
   const signup = async (
     email,
     password,
@@ -50,10 +49,9 @@ export const useSignup = () => {
       // const imgUrl = await getDownloadURL(imgRef)
 
       //                      // update auth profile
-      // await updateProfile(auth.currentUser, {
-      //   displayName,
-      //   photoURL: imgUrl
-      // })
+      await updateProfile(auth.currentUser, {
+        displayName,
+      });
 
       // create document in users collection,
       //  name of the document is users id
@@ -63,6 +61,8 @@ export const useSignup = () => {
         firstName,
         lastName,
         email,
+        id: auth.currentUser.uid,
+        displayName,
         // photoURL: imgUrl
       });
 

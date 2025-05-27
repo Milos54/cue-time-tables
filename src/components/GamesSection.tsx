@@ -1,13 +1,12 @@
 import { Calendar, Clock, Trophy, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from '../firebasehooks/useAuthContext';
 
 const mockGames = [
   {
     id: 1,
     player1: "Alex Johnson",
     player2: "Mike Chen",
-    score1: 8,
-    score2: 6,
     date: "2024-05-27",
     time: "14:30",
     winner: "Alex Johnson"
@@ -16,8 +15,6 @@ const mockGames = [
     id: 2,
     player1: "Sarah Davis",
     player2: "Tom Wilson",
-    score1: 8,
-    score2: 4,
     date: "2024-05-26",
     time: "19:15",
     winner: "Sarah Davis"
@@ -26,8 +23,6 @@ const mockGames = [
     id: 3,
     player1: "Mike Chen",
     player2: "Lisa Brown",
-    score1: 6,
-    score2: 8,
     date: "2024-05-25",
     time: "16:45",
     winner: "Lisa Brown"
@@ -36,8 +31,6 @@ const mockGames = [
     id: 4,
     player1: "Tom Wilson",
     player2: "Alex Johnson",
-    score1: 8,
-    score2: 7,
     date: "2024-05-24",
     time: "20:00",
     winner: "Tom Wilson"
@@ -46,6 +39,7 @@ const mockGames = [
 
 export const GamesSection = () => {
   const navigate = useNavigate();
+  const {user} = useAuthContext()
 
   return (
     <section id="games" className="py-20 bg-white/50">
@@ -99,7 +93,7 @@ export const GamesSection = () => {
                     </span>
                     {game.winner === game.player1 && <Trophy className="h-4 w-4 text-yellow-500" />}
                   </div>
-                  <span className="text-2xl font-bold text-gray-800">{game.score1}</span>
+                  {/* <span className="text-2xl font-bold text-gray-800">{game.score1}</span> */}
                 </div>
                 
                 <div className="border-t border-gray-100"></div>
@@ -114,7 +108,7 @@ export const GamesSection = () => {
                     </span>
                     {game.winner === game.player2 && <Trophy className="h-4 w-4 text-yellow-500" />}
                   </div>
-                  <span className="text-2xl font-bold text-gray-800">{game.score2}</span>
+                  {/* <span className="text-2xl font-bold text-gray-800">{game.score2}</span> */}
                 </div>
               </div>
             </div>

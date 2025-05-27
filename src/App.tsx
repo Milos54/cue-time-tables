@@ -8,8 +8,8 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import AddGame from "./pages/AddGame";
 import NotFound from "./pages/NotFound";
-import { AuthContextProvider } from './context/AuthContext';
 import { useAuthContext } from './firebasehooks/useAuthContext';
+import { Navigation } from "./components/Navigation";
 
 const queryClient = new QueryClient();
 
@@ -22,12 +22,17 @@ return  authIsReady &&  <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
+
       <BrowserRouter>
+      <Navigation />
+
         <Routes>
           <Route path="/" element={<Index />} />
          { user && <Route path="/login" element={<Navigate to='/'/>} />}
          { !user && <Route path="/login" element={<Login />} />}
-          <Route path="/add-game" element={<AddGame />} />
+         {user &&  <Route path="/add-game" element={<AddGame />} />}
+         { !user && <Route path="/add-game" element={<Navigate to='/'/>} />}
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

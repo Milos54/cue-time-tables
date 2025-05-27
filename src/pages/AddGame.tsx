@@ -10,8 +10,41 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Trophy, ArrowLeft } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { getUsers } from './Index';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+
+
+
+const SelectComponent = ({selectValue, selectLabel, options, onChange}) => {
+  return (
+    <Select onValueChange={onChange}>
+    <SelectTrigger>
+      <SelectValue placeholder={selectValue} />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectGroup>
+        <SelectLabel>{selectLabel}</SelectLabel>
+        {options && options.map((op) => (
+        <SelectItem  key={op.id} value={op.displayName || `${op.firstName} ${op.lastName}`}>{op.displayName || `${op.firstName} ${op.lastName}`}</SelectItem>
+
+        ))}
+     
+      </SelectGroup>
+    </SelectContent>
+  </Select>
+  )
+}
 
 const AddGame = () => {
+
+  const { data: users, status } = useQuery({
+    queryKey: ['users'],
+    queryFn: getUsers,
+  });
+
+  
   const navigate = useNavigate();
   const [player1, setPlayer1] = useState("");
   const [player2, setPlayer2] = useState("");
@@ -19,28 +52,29 @@ const AddGame = () => {
   const [score2, setScore2] = useState("");
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState("");
-
+  const [winner, setWinner] = useState(player1)
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Game submission logic will be added later
     console.log("Game submitted:", {
       player1,
       player2,
-      score1: Number(score1),
-      score2: Number(score2),
+      winner,
       date,
       time
     });
     
-    // Show success message and redirect
     alert("Game record added successfully!");
     navigate("/");
   };
 
-  const isFormValid = player1 && player2 && score1 && score2 && date && time;
+  
+
+  const isFormValid = player1 && player2 && winner && date ;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 p-4">
+   users && <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 p-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="flex items-center mb-8">
@@ -74,72 +108,27 @@ const AddGame = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Players Section */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="player1">Player 1</Label>
-                  <Input
-                    id="player1"
-                    type="text"
-                    placeholder="Enter player 1 name"
-                    value={player1}
-                    onChange={(e) => setPlayer1(e.target.value)}
-                    className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="player2">Player 2</Label>
-                  <Input
-                    id="player2"
-                    type="text"
-                    placeholder="Enter player 2 name"
-                    value={player2}
-                    onChange={(e) => setPlayer2(e.target.value)}
-                    className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                    required
-                  />
-                </div>
+              <div className="flex items-center gap-6">
+              <SelectComponent selectValue={'Player 1'} selectLabel={'Players'} options={users} onChange={setPlayer1}/>
+              <SelectComponent selectValue={'Player 2'} selectLabel={'Players'} options={users} onChange={setPlayer2}/>
+            
               </div>
 
               {/* Scores Section */}
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="score1">{player1 || "Player 1"} Score</Label>
-                  <Input
-                    id="score1"
-                    type="number"
-                    min="0"
-                    max="15"
-                    placeholder="0"
-                    value={score1}
-                    onChange={(e) => setScore1(e.target.value)}
-                    className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="score2">{player2 || "Player 2"} Score</Label>
-                  <Input
-                    id="score2"
-                    type="number"
-                    min="0"
-                    max="15"
-                    placeholder="0"
-                    value={score2}
-                    onChange={(e) => setScore2(e.target.value)}
-                    className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                    required
-                  />
-                </div>
-              </div>
+              {player1.length > 0 && player2.length > 0 && <div className="flex flex-col gap-6">
+               <h4>Who won?</h4>
+               <div className='flex items-center gap-4 justify-between'>
+               <Button type='button' onClick={() => setWinner('player1')} variant={winner === 'player1' ? 'winner' :  'outline'} className='flex-1'>{player1}</Button>
+               <Button type='button'  onClick={() => setWinner('player2')} variant={winner === 'player2' ? 'winner' :  'outline'} className='flex-1'>{player2}</Button>
+               </div>
+               
+              </div>}
 
               {/* Date and Time Section */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label>Game Date</Label>
-                  <Popover>
+                  <Popover  open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
@@ -154,9 +143,14 @@ const AddGame = () => {
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
                       <Calendar
+                        
                         mode="single"
                         selected={date}
-                        onSelect={setDate}
+                        onSelect={(selectedDate) => {
+                          setDate(selectedDate);
+                          setIsCalendarOpen(false); // ✅ close the popover after selecting
+                        }}
+                        
                         initialFocus
                       />
                     </PopoverContent>
@@ -171,7 +165,6 @@ const AddGame = () => {
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     className="border-green-200 focus:border-green-500 focus:ring-green-500"
-                    required
                   />
                 </div>
               </div>

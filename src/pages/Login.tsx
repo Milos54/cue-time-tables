@@ -5,8 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, Eye, EyeOff } from "lucide-react";
-import { collection, getDocs, onSnapshot,setDoc, doc } from "firebase/firestore";
-import {db} from '../firebase/config'
 import { useSignup } from '../firebasehooks/useSignup';
 import { useLogin } from '../firebasehooks/useLogin';
 import { useNavigate } from 'react-router-dom';
@@ -20,7 +18,7 @@ const Login = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [docs, setDocs] = useState(null)
+  const [displayName, setDisplayName] = useState('')
   const {signup} = useSignup()
   const {login} = useLogin()
   const navigate = useNavigate()
@@ -29,35 +27,14 @@ const Login = () => {
     e.preventDefault();
     // Authentication logic will be added later
     console.log("Form submitted:", { email, password, isLogin });
-    if(!isLogin)  {signup(email, password, firstName, lastName)}
+    if(!isLogin)  {signup(email, password, firstName, lastName, displayName)}
     else {
       login(email, password)
       navigate('/')
     }
   };
 
-  
 
-  const getLocations = async() => {
-
-   
-
-    let ref = collection(db, 'locations')
-    const unsub = onSnapshot(ref, (snapshot) => {
-      let results = []
-      snapshot.docs.forEach(doc => {
-        results.push({...doc.data(), id: doc.id})
-      })
-      setDocs(results)
-      return () => unsub()
-    })
-  }
-  
-
-  
-  useEffect(() => {
-    getLocations()
-}, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-green-100 flex items-center justify-center p-4">
@@ -93,24 +70,35 @@ const Login = () => {
               {!isLogin && (
                 <>
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">First Name</Label>
+                  <Label htmlFor="firstName">First Name</Label>
                   <Input
                     id="firstName"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="First Name"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     className="border-green-200 focus:border-green-500 focus:ring-green-500"
                   />
                 </div>
                 <div className="space-y-2">
-                <Label htmlFor="fullName">last Name</Label>
+                <Label htmlFor="lastName">Last Name</Label>
                 <Input
                   id="lastName"
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  className="border-green-200 focus:border-green-500 focus:ring-green-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nickName">Nick Name </Label>
+                <Input
+                  id="nickName"
+                  type="text"
+                  placeholder="Last Name"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
                   className="border-green-200 focus:border-green-500 focus:ring-green-500"
                 />
               </div>
