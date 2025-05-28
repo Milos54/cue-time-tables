@@ -1,2 +1,2 @@
-** Ovo je projekat mobilijar **
-**** Koristi se za interno vodjenje evidencije o odigranim partijama ****
+# Ovo je projekat mobilijar
+#### Koristi se za interno vođenje evidencije o odigranim partijama
