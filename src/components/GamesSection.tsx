@@ -105,11 +105,11 @@ export const GamesSection = () => {
                           .join('')}
                       </div>
                       <span
-                        className={`font-medium ${game.winner === game.player1 ? 'text-green-600' : 'text-gray-700'}`}
+                        className={`font-medium ${game.winner === 'player1' ? 'text-green-600' : 'text-gray-700'}`}
                       >
                         {game.player1}
                       </span>
-                      {game.winner === game.player1 && (
+                      {game.winner === 'player1' && (
                         <Trophy className="h-4 w-4 text-yellow-500" />
                       )}
                     </div>
@@ -127,11 +127,11 @@ export const GamesSection = () => {
                           .join('')}
                       </div>
                       <span
-                        className={`font-medium ${game.winner === game.player2 ? 'text-green-600' : 'text-gray-700'}`}
+                        className={`font-medium ${game.winner === 'player2' ? 'text-green-600' : 'text-gray-700'}`}
                       >
                         {game.player2}
                       </span>
-                      {game.winner === game.player2 && (
+                      {game.winner === 'player2' && (
                         <Trophy className="h-4 w-4 text-yellow-500" />
                       )}
                     </div>
