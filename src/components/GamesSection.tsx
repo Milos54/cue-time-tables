@@ -113,7 +113,9 @@ export const GamesSection = () => {
                         <Trophy className="h-4 w-4 text-yellow-500" />
                       )}
                     </div>
-                    {/* <span className="text-2xl font-bold text-gray-800">{game.score1}</span> */}
+                    <span className="text-2xl font-bold text-gray-800">
+                      {game?.score1}
+                    </span>
                   </div>
 
                   <div className="border-t border-gray-100"></div>
@@ -135,7 +137,9 @@ export const GamesSection = () => {
                         <Trophy className="h-4 w-4 text-yellow-500" />
                       )}
                     </div>
-                    {/* <span className="text-2xl font-bold text-gray-800">{game.score2}</span> */}
+                    <span className="text-2xl font-bold text-gray-800">
+                      {game?.score2}
+                    </span>
                   </div>
                 </div>
               </div>

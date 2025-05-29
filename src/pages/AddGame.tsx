@@ -116,14 +116,17 @@ const AddGame = () => {
   async function saveGameRecord() {
     const docId = uuidv4();
     const formattedDate = format(date, 'yyyy-MM-dd');
-    await setDoc(doc(db, 'games', docId), {
+    const newGame = {
       id: docId,
       player1,
       player2,
       winner,
       date: formattedDate,
       time,
-    });
+      score1,
+      score2,
+    };
+    await setDoc(doc(db, 'games', docId), newGame);
   }
 
   const isFormValid = player1 && player2 && winner && date;
@@ -206,6 +209,42 @@ const AddGame = () => {
                   </div>
                 )}
 
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="score1">
+                      {player1 || 'Player 1'} Score
+                    </Label>
+                    <Input
+                      id="score1"
+                      type="number"
+                      min="0"
+                      max="15"
+                      placeholder="0"
+                      value={score1}
+                      onChange={(e) => setScore1(e.target.value)}
+                      className="border-green-200 focus:border-green-500 focus:ring-green-500"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="score2">
+                      {player2 || 'Player 2'} Score
+                    </Label>
+                    <Input
+                      id="score2"
+                      type="number"
+                      min="0"
+                      max="15"
+                      placeholder="0"
+                      value={score2}
+                      onChange={(e) => setScore2(e.target.value)}
+                      className="border-green-200 focus:border-green-500 focus:ring-green-500"
+                      required
+                    />
+                  </div>
+                </div>
+
                 {/* Date and Time Section */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
@@ -253,19 +292,19 @@ const AddGame = () => {
                 </div>
 
                 {/* Winner Display */}
-                {score1 && score2 && Number(score1) !== Number(score2) && (
+                {/* {score1 && score2 && Number(score1) !== Number(score2) && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center gap-2">
                       <Trophy className="h-4 w-4 text-green-600" />
                       <span className="font-medium text-green-800">
                         Winner:{' '}
-                        {Number(score1) > Number(score2)
+                        {winner === 'player1'
                           ? player1 || 'Player 1'
                           : player2 || 'Player 2'}
                       </span>
                     </div>
                   </div>
-                )}
+                )} */}
 
                 {/* Submit Button */}
                 <div className="flex gap-4 pt-4">
